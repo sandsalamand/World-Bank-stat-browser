@@ -1,1 +1,11 @@
-<p>data-display works!</p>
+<h1>{{headerStr}}</h1>
+<p>id is {{id}}</p>
+<ul>
+    <li *ngFor="let kvp of data | jsonToKeys">
+        <ul>
+            <li *ngFor="let datum of kvp | jsonToKeys">
+                <span>{{datum.key}}</span>
+            </li>
+        </ul>
+    </li>
+</ul>

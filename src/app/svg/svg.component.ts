@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, Output } from '@angular/core';
 import {AfterViewInit, Directive, QueryList, ViewChildren} from '@angular/core';
-import { ApiHttpService } from '../api-http.service';
+import { ApiHttpService, MainData, WorldBankResponse } from '../api-http.service';
 
 @Component({
   selector: 'app-svg',
@@ -8,17 +8,20 @@ import { ApiHttpService } from '../api-http.service';
   imports: [],
   templateUrl: './svg.component.html',
   styleUrl: './svg.component.css',
-  providers: [ApiHttpService]
 })
-export class SvgComponent implements AfterViewInit {
-    @ViewChildren(ElementRef) svgChildren!: QueryList<ElementRef>;
+export class SvgComponent implements OnInit {
 
     hoveredPathElement?: Element = undefined;
     selectedShapeFillColor = 'green';
 
-    @Output() selectedCountryData: string = '';
-
     constructor(private apiService: ApiHttpService) {}
+
+    ngOnInit(): void {
+        this.apiService.apiRequestResult.subscribe((data: MainData) => {
+            console.log("response to svg.component.ts was " + data);
+            console.log("id is " + data.id);
+        });
+    }
 
     mapClicked(e: MouseEvent): void {
         console.log('map clicked at pos ' + e.clientX);
@@ -28,10 +31,7 @@ export class SvgComponent implements AfterViewInit {
             let countryName = this.hoveredPathElement.getAttribute('name');
             let countryId = this.hoveredPathElement.getAttribute('id');
             console.log("Clicked on " + countryName + ", id " + countryId);
-            this.apiService.getCountryData(countryId!).subscribe((response: any) => {
-                this.selectedCountryData = response;
-                console.log("response was " + response);
-            });
+            this.apiService.getCountryData(countryId!);
         }
     }
 
@@ -43,50 +43,12 @@ export class SvgComponent implements AfterViewInit {
         }
         if (topMostElement?.tagName == 'path')
         {
-            topMostElement.setAttribute('fill', 'green');
+            topMostElement.setAttribute('fill', this.selectedShapeFillColor);
             this.hoveredPathElement = topMostElement;
         }
         else
         {
             this.hoveredPathElement = undefined;
         }
-    }
-
-    ngAfterViewInit(): void {
-
-        // console.log("svgChildren is " + this.svgChildren);
-        // console.log("changes is " + this.svgChildren.changes)
-
-        // console.log("len is " + this.svgChildren.toArray().length)
-
-        // let pathElements = document.getElementsByTagName('path');
-
-        // this.svgChildren.changes.subscribe((r) => {
-        //     this.addAngularDataBindingAttributes(r);
-        // });
-
-        //console.log("len is " + svgPaths.length);
-
-        // for (let i = 0; i < pathElements.length; i++) {
-        //    let svgPath = pathElements[i];
-
-        //    svgPath.setAttribute('fill', 'green');
-        // }
-        
-    }
-
-    // addAngularDataBindingAttributes(elementRef: ElementRef)
-    // {
-    //     elementRef.nativeElement.setAttribute('[attr.fill]', 'selectedShapeFillColor');
-    //     elementRef.nativeElement.setAttribute('(click)', 'changeColor()');
-    //     console.log("binding");
-    // }
-
-    changeColor(): void {
-        console.log("click received");
-        const r = Math.floor(Math.random() * 256);
-        const g = Math.floor(Math.random() * 256);
-        const b = Math.floor(Math.random() * 256);
-        this.selectedShapeFillColor = `rgb(${r}, ${g}, ${b})`;
     }
 }

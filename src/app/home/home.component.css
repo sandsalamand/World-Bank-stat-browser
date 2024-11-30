@@ -1,0 +1,47 @@
+:host{
+    --fs-1: .75rem;
+    --fs-2: 1rem;
+    --fs-3: 1.25rem;
+  }
+  
+@media (min-width: 75em){
+    :host{
+        --fs-1: 1.125rem;
+        --fs-2: 1.5rem;
+        --fs-3: 2rem;
+    }
+}
+
+header {
+    width: 100 vw;
+    font-size: var(--fs-3);
+    text-align: center;
+
+    margin-top: 2vh;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 30vw auto;
+}
+
+#data-display {
+    background-color: lightblue;
+    border-radius: 5px;
+
+    font-size: var(--fs-1);
+
+    margin-left: 1vw;
+    margin-right: 2vw;
+    margin-top: 4vh;
+    padding: var(--fs-2) calc(2 * var(--fs-2) * 1.1);
+}
+
+#data-display h1 {
+    font-size: var(--fs3);
+}
+
+#svg {  
+    margin-right: 5vw;
+    margin-top: 4vh;
+}
