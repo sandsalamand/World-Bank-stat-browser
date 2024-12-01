@@ -15,15 +15,28 @@
     margin-bottom: calc(var(--fs) * 1.6);
 }
 
-.data-key {
+#data-list > p {
+    display: flex;
+    flex: 0 1 50%;
+}
+
+#data-list > p > * {
     --fs: var(--fs-2);
 
-    display: inline-block;
-    font-weight: bold;
-    width: 40%;
+    height: auto;
     
     padding: calc(var(--fs) / 2);
     margin: 0;
+}
+
+
+.data-key {
+    font-weight: bold;
+    flex-basis: 40%;
+}
+
+.data-value {
+    flex-basis: 60%;
 }
 
 p {

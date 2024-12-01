@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
+import { Observable, Subject, SubjectLike } from 'rxjs';
 
 export interface WorldBankResponse {
     countriesData: CountryData[];
@@ -9,7 +9,7 @@ export interface WorldBankResponse {
 export interface CountryData 
 {
     responseMetaData: ResponseMetaData;
-    mainData: MainData[];
+    mainData: SimpleData[];
 }
 
 export interface ResponseMetaData
@@ -20,7 +20,7 @@ export interface ResponseMetaData
     total: number
 }
 
-export interface MainData
+export interface SimpleData
 {
     id: string;
     iso2Code: string;
@@ -50,25 +50,95 @@ export interface MainData
     latitude: string;
 }
 
+export class AdvancedData
+{
+    population: string = 'N/a';
+    otherData: string = 'N/a';
+}
+
+// export interface DisplayedData
+// {
+//     id: string;
+//     iso2Code: string;
+//     name: string;
+//     region: {
+//         value: string;
+//     },
+//     incomeLevel: {
+//         value: string;
+//     },
+//     lendingType: {
+//         value: string;
+//     },
+//     capitalCity: string;
+//     longitude: string;
+//     latitude: string;
+// }
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiHttpService {
 
     //data-display.component subscribes to this to get new data when getCountryData is called from svg.component
-    public apiRequestResult: Subject<MainData> = new Subject<MainData>();
+    public apiRequestResult: Subject<SimpleData> = new Subject<SimpleData>();
 
     constructor(private http: HttpClient) {}
     
-    public getCountryData(countryId: string) : Subject<MainData>
+    public getCountryData()
     {
-        let requestUrl = "https://api.worldbank.org/v2/country/" + countryId + '?format=json';
+
+    }
+
+    /**
+     * Get basic data about a country
+     * @returns {Subject<SimpleData>} - An observable which receives updates when country data is retrieved from the server
+     * @param {string} iso2Code - This needs to be the 2 letter country id
+     */
+    public getSimpleCountryData(iso2Code: string) : Subject<SimpleData>
+    {
+        let requestUrl = "https://api.worldbank.org/v2/country/" + iso2Code + '?format=json';
         this.http.get<any>(requestUrl).subscribe(response => {
             //The JSON served by the API is missing some key names, so we have to parse the empty keys with [1][0] to get to the named keys
             let mainJsonObject = response[1][0];
-            this.apiRequestResult.next(<MainData>mainJsonObject);
+            this.apiRequestResult.next(<SimpleData>mainJsonObject);
         });
 
         return this.apiRequestResult;
+    }
+
+    /**
+     * Get advanced data about a country. Includes population and _
+     * @returns {Subject<SimpleData>} - An observable which receives updates when advanced data is retrieved
+     * @param {string} countryId - This needs to be the 3 letter country id
+     */
+    public getAdvancedCountryData(countryId: string) : Subject<AdvancedData> 
+    {
+        let returnData = new AdvancedData();
+
+        let returnObservable = new Subject<AdvancedData>();
+
+        let requestUrl = "https://api.worldbank.org/v2/sources/57/country/" + countryId + "/series/SP.POP.TOTL/version/202004/data?format=jsonstat";
+
+        //When we get the HTTP response, push that to the observable which is returned by this function
+        this.http.get<any>(requestUrl).subscribe(response => {
+            let populationDataPoints: number[] = response.WDA.value;
+
+            //Find the most recent data point. Since the data is sorted by ascending year, we start searching from the end of the array.
+            let mostRecentDataPoint: string = 'N/a';
+            for (let i = populationDataPoints.length - 1; i >= 0; i--)
+            {
+                if (populationDataPoints[i])
+                {
+                    mostRecentDataPoint = populationDataPoints[i].toString();
+                    console.log(" i was " + i);
+                    break;
+                }
+            }
+            returnData.population = mostRecentDataPoint;
+            returnObservable.next(returnData);
+        });
+
+        return returnObservable;
     }
 }

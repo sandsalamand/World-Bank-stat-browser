@@ -1,7 +1,7 @@
 
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
-import { ApiHttpService, MainData } from '../api-http.service';
+import { ApiHttpService, SimpleData } from '../api-http.service';
 import { JsonToKeysPipe } from '../json-to-keys.pipe';
 
 @Component({
@@ -22,8 +22,10 @@ export class DataDisplayComponent implements AfterViewInit  {
     region: string = '';
     incomeLevel: string = '';
     capitalCity: string = '';
+    population: string = '';
 
-    data: MainData | undefined = undefined;
+    //Old idea
+    //data: MainData | undefined = undefined;
 
     ngAfterViewInit(): void {
         
@@ -31,14 +33,22 @@ export class DataDisplayComponent implements AfterViewInit  {
 
     ngOnInit()
     {
-        this.apiService.apiRequestResult.subscribe((data: MainData) => { 
-            console.log("Data is " + data);
-            this.headerStr = data.name + ' Statistics';
-            this.capitalCity = data.capitalCity;
-            this.id = data.id; 
-            this.region = data.region.value;
-            this.incomeLevel = data.incomeLevel.value;
-            this.data = data;
-        });
+        //For some reason, you need to bind onCountryUpdated in a lambda instead of just providing it as an argument to subscribe
+        this.apiService.apiRequestResult.subscribe((data: SimpleData) => this.onCountryDataUpdated(data));
+    }
+
+    onCountryDataUpdated(data: SimpleData ) : void
+    {
+        console.log("Data is " + data);
+        this.headerStr = data.name + ' Statistics';
+        console.log("headerStr: " + this.headerStr);
+        this.capitalCity = data.capitalCity;
+        this.id = data.id; 
+        console.log("id: " + this.id);
+        this.region = data.region.value;
+        this.incomeLevel = data.incomeLevel.value;
+        //this.data = data;
+
+        this.apiService.getAdvancedCountryData(data.id).subscribe((response) => { this.population = response.population });
     }
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, Output } from '@angular/core';
 import {AfterViewInit, Directive, QueryList, ViewChildren} from '@angular/core';
-import { ApiHttpService, MainData, WorldBankResponse } from '../api-http.service';
+import { ApiHttpService, SimpleData, WorldBankResponse } from '../api-http.service';
 
 @Component({
   selector: 'app-svg',
@@ -17,21 +17,17 @@ export class SvgComponent implements OnInit {
     constructor(private apiService: ApiHttpService) {}
 
     ngOnInit(): void {
-        this.apiService.apiRequestResult.subscribe((data: MainData) => {
-            console.log("response to svg.component.ts was " + data);
-            console.log("id is " + data.id);
+        this.apiService.apiRequestResult.subscribe((data: SimpleData) => {
         });
     }
 
     mapClicked(e: MouseEvent): void {
-        console.log('map clicked at pos ' + e.clientX);
-        //let topMostElement = document.elementFromPoint(e.clientX, e.clientY);
         if(this.hoveredPathElement)
         {
             let countryName = this.hoveredPathElement.getAttribute('name');
             let countryId = this.hoveredPathElement.getAttribute('id');
             console.log("Clicked on " + countryName + ", id " + countryId);
-            this.apiService.getCountryData(countryId!);
+            this.apiService.getSimpleCountryData(countryId!);
         }
     }
 

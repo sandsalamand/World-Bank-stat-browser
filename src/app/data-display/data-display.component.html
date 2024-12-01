@@ -3,10 +3,21 @@
         <h1 id="data-display-header">{{headerStr}}</h1>
     </header>
     <section id="data-list">
-        <p *ngIf="id"><span class="data-key">ID: </span> {{id}}</p>
-        <p *ngIf="capitalCity"><span class="data-key">Capital city:</span> {{capitalCity}}</p>
-        <p *ngIf="region"><span class="data-key">Region:</span> {{region}}</p>
-        <p *ngIf="incomeLevel"><span class="data-key">Income Level:</span> {{incomeLevel}}</p>
+        <p *ngIf="id">
+            <span class="data-key">ID: </span><span class="data-value">{{id}}</span>
+        </p>
+        <p *ngIf="capitalCity">
+            <span class="data-key">Capital city: </span><span class="data-value">{{capitalCity}}</span>
+        </p>
+        <p *ngIf="region">
+            <span class="data-key">Region: </span><span class="data-value">{{region}}</span>
+        </p>
+        <p *ngIf="incomeLevel">
+            <span class="data-key">Income Level: </span><span class="data-value">{{incomeLevel}}</span>
+        </p>
+        <p *ngIf="population">
+            <span class="data-key">Population: </span><span class="data-value">{{population}}</span>
+        </p>
     </section>
 </section>
 
