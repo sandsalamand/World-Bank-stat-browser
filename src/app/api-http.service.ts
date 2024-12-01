@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, SubjectLike } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export interface WorldBankResponse {
     countriesData: CountryData[];
@@ -53,7 +53,7 @@ export interface SimpleData
 export class AdvancedData
 {
     population: string = 'N/a';
-    otherData: string = 'N/a';
+    gdp: string = 'N/a';
 }
 
 // export interface DisplayedData
@@ -108,7 +108,7 @@ export class ApiHttpService {
     }
 
     /**
-     * Get advanced data about a country. Includes population and _
+     * Get advanced data about a country. Includes population and GDP
      * @returns {Subject<SimpleData>} - An observable which receives updates when advanced data is retrieved
      * @param {string} countryId - This needs to be the 3 letter country id
      */
@@ -116,12 +116,15 @@ export class ApiHttpService {
     {
         let returnData = new AdvancedData();
 
+        //We don't know which response will return first, so push to the observable when receivedResponses is 2
+        let receivedResponses = 0;
+
         let returnObservable = new Subject<AdvancedData>();
 
-        let requestUrl = "https://api.worldbank.org/v2/sources/57/country/" + countryId + "/series/SP.POP.TOTL/version/202004/data?format=jsonstat";
+        let populationRequestUrl = "https://api.worldbank.org/v2/sources/57/country/" + countryId + "/series/SP.POP.TOTL/version/202004/data?format=jsonstat";
 
         //When we get the HTTP response, push that to the observable which is returned by this function
-        this.http.get<any>(requestUrl).subscribe(response => {
+        this.http.get<any>(populationRequestUrl).subscribe(response => {
             let populationDataPoints: number[] = response.WDA.value;
 
             //Find the most recent data point. Since the data is sorted by ascending year, we start searching from the end of the array.
@@ -136,7 +139,18 @@ export class ApiHttpService {
                 }
             }
             returnData.population = mostRecentDataPoint;
-            returnObservable.next(returnData);
+            receivedResponses++;
+            if (receivedResponses == 2)
+                returnObservable.next(returnData);
+        });
+
+        let gdpRequestUrl = 'https://api.worldbank.org/v2/sources/57/country/' + countryId +'/series/NY.GDP.MKTP.KD/time/yr2018/version/202204/data?format=jsonstat';
+        this.http.get<any>(gdpRequestUrl).subscribe(response => {
+            //for this request, we specifically request 2018, so we don't need to find the most recent data
+            returnData.gdp = response.WDA.value[0];
+            receivedResponses++;
+            if (receivedResponses == 2)
+                returnObservable.next(returnData);
         });
 
         return returnObservable;

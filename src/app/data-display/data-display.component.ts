@@ -23,6 +23,7 @@ export class DataDisplayComponent implements AfterViewInit  {
     incomeLevel: string = '';
     capitalCity: string = '';
     population: string = '';
+    gdp: string = '';
 
     //Old idea
     //data: MainData | undefined = undefined;
@@ -39,16 +40,33 @@ export class DataDisplayComponent implements AfterViewInit  {
 
     onCountryDataUpdated(data: SimpleData ) : void
     {
-        console.log("Data is " + data);
-        this.headerStr = data.name + ' Statistics';
-        console.log("headerStr: " + this.headerStr);
-        this.capitalCity = data.capitalCity;
-        this.id = data.id; 
-        console.log("id: " + this.id);
-        this.region = data.region.value;
-        this.incomeLevel = data.incomeLevel.value;
-        //this.data = data;
+        //Set this as soon as the first packet arrives so that the user knows what's going on
+        this.headerStr = "Loading data for " + data.name;
 
-        this.apiService.getAdvancedCountryData(data.id).subscribe((response) => { this.population = response.population });
+        //Blank previous data out
+        this.capitalCity = ' ';
+        this.id = ' '; 
+        this.region = ' ';
+        this.incomeLevel = ' ';
+        this.incomeLevel = ' ';
+        this.population = ' ';
+        this.gdp = ' ';
+
+        //Wait until the advanced data arrives to set all of the data at the same time.
+        //The reason we can't request the advanced data at the same time as the simple data is that the advanced data API requires the 3-letter country code,
+        //which is provided by the simple country API call using the 2-letter iso2code from the svg file
+        this.apiService.getAdvancedCountryData(data.id).subscribe((response) =>
+        {
+            //Set simple data from previous request
+            this.headerStr = data.name + ' Statistics';
+            this.capitalCity = data.capitalCity;
+            this.id = data.id; 
+            this.region = data.region.value;
+            this.incomeLevel = data.incomeLevel.value;
+
+            //Set advanced data from the most recent request
+            this.population = response.population;
+            this.gdp = response.gdp;
+        });
     }
 }
