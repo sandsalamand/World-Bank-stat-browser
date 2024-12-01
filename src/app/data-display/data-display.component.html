@@ -1,11 +1,19 @@
-<h1>{{headerStr}}</h1>
-<p>id is {{id}}</p>
+<section id="root-data-display">
+    <header>
+        <h1 id="data-display-header">{{headerStr}}</h1>
+    </header>
+    <section id="data-list">
+        <p *ngIf="id"><span class="data-key">ID: </span> {{id}}</p>
+        <p *ngIf="capitalCity"><span class="data-key">Capital city:</span> {{capitalCity}}</p>
+        <p *ngIf="region"><span class="data-key">Region:</span> {{region}}</p>
+        <p *ngIf="incomeLevel"><span class="data-key">Income Level:</span> {{incomeLevel}}</p>
+    </section>
+</section>
+
+<!-- This was a cool idea, but it turns out that the API response key names are too ugly, so I have to write them manually
 <ul>
-    <li *ngFor="let kvp of data | jsonToKeys">
-        <ul>
-            <li *ngFor="let datum of kvp | jsonToKeys">
-                <span>{{datum.key}}</span>
-            </li>
-        </ul>
+    <li *ngFor="let datum of data | jsonToKeys">
+        <span>{{datum}}</span>
     </li>
 </ul>
+-->

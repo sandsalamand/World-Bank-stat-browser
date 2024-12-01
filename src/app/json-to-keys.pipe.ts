@@ -18,12 +18,23 @@ export class KeyValuePair
 })
 export class JsonToKeysPipe implements PipeTransform {
 
-    transform(jsonObject: any) : KeyValuePair[] {
-        let keyValuePairs: KeyValuePair[] = [];
-        for (let key in jsonObject) {
-            keyValuePairs.push(new KeyValuePair(key, jsonObject[key]));
-        }
-        return keyValuePairs;
-      }
+    transform(jsonObject: any) : string[] {
 
+        if (jsonObject == undefined)
+            return [''];
+
+        let keys: string[] = Object.keys(jsonObject);
+        let values: any[] = Object.values(jsonObject);
+
+        for (let i = 0; i < values.length; i++)
+        {
+            if (typeof(values[i]) === 'object')
+            {
+                let valAssociatedWithValueKey = values[i]['value'];
+                values[i] = keys[i] + ' ' + valAssociatedWithValueKey;
+            }
+        }
+
+        return values;
+    }
 }

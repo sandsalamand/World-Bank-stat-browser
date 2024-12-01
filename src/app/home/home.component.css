@@ -32,13 +32,9 @@ main {
     font-size: var(--fs-1);
 
     margin-left: 1vw;
-    margin-right: 2vw;
+    margin-right: 4vw;
     margin-top: 4vh;
     padding: var(--fs-2) calc(2 * var(--fs-2) * 1.1);
-}
-
-#data-display h1 {
-    font-size: var(--fs3);
 }
 
 #svg {  
