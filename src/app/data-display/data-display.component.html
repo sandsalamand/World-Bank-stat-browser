@@ -1,0 +1,33 @@
+<section id="root-data-display">
+    <header>
+        <h1 id="data-display-header">{{headerStr}}</h1>
+    </header>
+    <section id="data-list">
+        <p *ngIf="id">
+            <span class="data-key">ID: </span><span class="data-value">{{id}}</span>
+        </p>
+        <p *ngIf="capitalCity">
+            <span class="data-key">Capital city: </span><span class="data-value">{{capitalCity}}</span>
+        </p>
+        <p *ngIf="region">
+            <span class="data-key">Region: </span><span class="data-value">{{region}}</span>
+        </p>
+        <p *ngIf="incomeLevel">
+            <span class="data-key">Income Level: </span><span class="data-value">{{incomeLevel}}</span>
+        </p>
+        <p *ngIf="population">
+            <span class="data-key">Population: </span><span class="data-value">{{population}}</span>
+        </p>
+        <p *ngIf="gdp">
+            <span class="data-key">GDP (2018): </span><span class="data-value">{{gdp}}</span>
+        </p>
+    </section>
+</section>
+
+<!-- This was a cool idea, but it turns out that the API response key names are too ugly, so I have to write them manually
+<ul>
+    <li *ngFor="let datum of data | jsonToKeys">
+        <span>{{datum}}</span>
+    </li>
+</ul>
+-->

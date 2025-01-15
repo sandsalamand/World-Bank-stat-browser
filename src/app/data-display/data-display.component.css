@@ -1,0 +1,52 @@
+#root-data-display
+{
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#data-display-header {
+    --fs: var(--fs-2);
+
+    font-size: var(--fs);
+    text-align: center;
+
+    padding-bottom: calc(var(--fs) * 1.4);
+    padding-top: calc(var(--fs) * 0.5);
+    border-bottom: calc(var(--fs) / 5) solid black;
+    margin-bottom: calc(var(--fs) * 1.6);
+}
+
+#data-list > p {
+    display: flex;
+    flex: 0 1 50%;
+}
+
+#data-list > p > * {
+    --fs: var(--fs-2);
+
+    height: auto;
+    
+    padding: calc(var(--fs) / 2);
+    margin: 0;
+}
+
+
+.data-key {
+    font-weight: bold;
+    flex-basis: 40%;
+}
+
+.data-value {
+    flex-basis: 60%;
+}
+
+p {
+    margin: 0;
+    border-radius: 3px;
+}
+
+p:nth-child(odd) {
+    background-color: rgb(179, 191, 191);
+}
+p:nth-child(even) {
+    background-color: rgb(224, 224, 224);
+}

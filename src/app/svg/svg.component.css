@@ -1,0 +1,14 @@
+/*
+I really wanted this to work, but I couldn't figure out how to make the countries scale from their center.
+Also, because the scaling is based on percent, large countries scale way more than small countries.
+
+path {
+    transform-origin: left;
+    transform-box:fill-box;
+}
+
+path:hover {
+    --scale: calc(100% + 100px);
+    transform: scale(var(--scale));
+}
+*/
