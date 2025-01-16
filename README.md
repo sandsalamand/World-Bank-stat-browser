@@ -1,4 +1,4 @@
-# Technical Overview
+# Overview
 1. The home component loads a world map SVG contained in svg.component.html. A mouse event listener is attached in svg.component.ts.
 2. When a country is clicked, a GET request containing the 2-letter ISO A-2 country code (from the SVG file) is sent to World Bank's basic API.
 3. While the app is waiting for a response, a loading message is displayed in the data-display component.
